@@ -15,7 +15,7 @@ export function createPlayer() {
 
         gold: 0,
 
-        soul: "yang",
+        soul: "yin",
 
         direction: "down",
         moving: false,
