@@ -1,0 +1,20 @@
+{
+    "potion": {
+        "name": "治療藥水",
+        "type": "consumable",
+        "description": "恢復少量靈魂完整度",
+        "heal": 30
+    },
+
+    "soul_fragment": {
+        "name": "靈魂碎片",
+        "type": "material",
+        "description": "從白色沙地中拾起的破碎靈魂"
+    },
+
+    "lantern": {
+        "name": "引魂燈",
+        "type": "key",
+        "description": "能照出被遺忘之物的燈"
+    }
+}
