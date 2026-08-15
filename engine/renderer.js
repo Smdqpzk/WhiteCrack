@@ -1,6 +1,7 @@
-import {
-    renderPixelPlayer
-} from "../player/pixel-sprite.js";
+const yinSprite = new Image();
+
+yinSprite.src =
+    "./assets/player/yin_walk_24.png";
 
 
 export class Renderer {
@@ -670,23 +671,371 @@ export class Renderer {
        Player
     ===================================================== */
 
-    drawPlayer(
-        player,
-        camera,
-        game
+   drawPlayer(
+    player,
+    camera,
+    game
+) {
+
+    const ctx = this.ctx;
+
+    const x =
+        Math.round(
+            player.x -
+            camera.x
+        );
+
+    const y =
+        Math.round(
+            player.y -
+            camera.y
+        );
+
+
+    /*
+        陰相使用真正的 Pixel Art
+    */
+
+    if (
+        player.soul === "yin"
     ) {
 
-        renderPixelPlayer(
+        if (
+            yinSprite.complete
+        ) {
 
-            this.ctx,
+            /*
+                Sprite Sheet：
 
-            player,
+                row 0 = back / up
+                row 1 = front / down
+                row 2 = left
+                row 3 = right
+            */
 
-            camera
+            const rowMap = {
+
+                up: 0,
+
+                down: 1,
+
+                left: 2,
+
+                right: 3
+
+            };
+
+
+            const row =
+                rowMap[
+                    player.direction
+                ] ?? 1;
+
+
+            /*
+                5 幀動畫
+            */
+
+            let frame = 0;
+
+
+            if (
+                player.moving
+            ) {
+
+                frame =
+                    Math.floor(
+                        performance.now() /
+                        120
+                    ) % 5;
+
+            }
+
+
+            /*
+                Sprite Sheet 座標
+            */
+
+            const sourceX =
+                frame * 24;
+
+            const sourceY =
+                row * 24;
+
+
+            /*
+                地面陰影
+            */
+
+            ctx.fillStyle =
+                "rgba(40,40,50,.25)";
+
+
+            ctx.beginPath();
+
+            ctx.ellipse(
+
+                x,
+
+                y + 2,
+
+                9,
+
+                3,
+
+                0,
+
+                0,
+
+                Math.PI * 2
+
+            );
+
+            ctx.fill();
+
+
+            /*
+                繪製 24x24 sprite
+
+                放大 1 倍，
+                保持像素清晰
+            */
+
+            ctx.drawImage(
+
+                yinSprite,
+
+                sourceX,
+                sourceY,
+
+                24,
+                24,
+
+                x - 12,
+                y - 24,
+
+                24,
+                24
+
+            );
+
+
+            /*
+                陰相靈魂光
+            */
+
+            ctx.strokeStyle =
+                "rgba(180,215,255,.22)";
+
+            ctx.lineWidth = 1;
+
+            ctx.beginPath();
+
+            ctx.arc(
+
+                x,
+
+                y - 12,
+
+                15,
+
+                0,
+
+                Math.PI * 2
+
+            );
+
+            ctx.stroke();
+
+
+            /*
+                陰相攻擊鎖鏈
+            */
+
+            if (
+                player.attackTimer > 0
+            ) {
+
+                ctx.strokeStyle =
+                    "#b8ddff";
+
+                ctx.lineWidth = 2;
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+
+                    x + 5,
+
+                    y - 12
+
+                );
+
+                ctx.lineTo(
+
+                    x + 28,
+
+                    y - 17
+
+                );
+
+                ctx.stroke();
+
+            }
+
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+        下面保留陽相的舊畫法
+    */
+
+    this.drawYangPlayer(
+        player,
+        camera
+    );
+
+}
+
+drawYangPlayer(
+    player,
+    camera
+) {
+
+    const ctx = this.ctx;
+
+    const x =
+        player.x -
+        camera.x;
+
+    const y =
+        player.y -
+        camera.y;
+
+
+    /*
+        Shadow
+    */
+
+    ctx.fillStyle =
+        "rgba(40,40,40,.25)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+
+        x,
+
+        y + 4,
+
+        8,
+
+        3,
+
+        0,
+
+        0,
+
+        Math.PI * 2
+
+    );
+
+    ctx.fill();
+
+
+    /*
+        Body
+    */
+
+    ctx.fillStyle =
+        "#9b5139";
+
+    ctx.fillRect(
+
+        x - 6,
+        y - 15,
+
+        12,
+        15
+
+    );
+
+
+    /*
+        Head
+    */
+
+    ctx.fillStyle =
+        "#d7a47d";
+
+    ctx.fillRect(
+
+        x - 5,
+        y - 23,
+
+        10,
+        10
+
+    );
+
+
+    /*
+        Hair
+    */
+
+    ctx.fillStyle =
+        "#25242b";
+
+    ctx.fillRect(
+
+        x - 5,
+        y - 25,
+
+        10,
+        4
+
+    );
+
+
+    /*
+        Yang attack
+    */
+
+    if (
+        player.attackTimer > 0
+    ) {
+
+        ctx.strokeStyle =
+            "#ffdc72";
+
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+
+        ctx.arc(
+
+            x,
+
+            y - 8,
+
+            17,
+
+            -1.1,
+
+            1.1
 
         );
 
+        ctx.stroke();
+
     }
+
+}
 
 
     /* =====================================================
